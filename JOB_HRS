@@ -1,0 +1,18 @@
+#!/bin/bqn
+Split←{' '((⊢-˜+`×¬)∘=⊔⊢)𝕩}⋄
+Read←10⊸×⊸+˜´∘⌽-⟜'0'⋄
+dayMatrix←(≢⥊Read¨)∘>Split¨∘•FLines ".HOURS"⋄
+Fst←{0<≠𝕩?⊑𝕩;⟨⟩}⋄
+Snd←{1<≠𝕩?1⊑𝕩;𝕨}⋄
+{𝕊: ⋄
+	date←(1⊸↓⌾⌽)1⊑•SH "date"‿"+%Y%m%d"⋄
+	numDaysSinceStart←86400÷˜((1⊸↓⌾⌽)1⊑•SH "date"‿"+%s"‿"-d"‿date)(-○Read)(1⊸↓⌾⌽)1⊑•SH "date"‿"+%s"‿"-d"‿"20230515"⋄
+	dayMatrix↩{𝕊: 𝕩∾5⥊0}⍟{numDaysSinceStart≥≠⥊0∾˘⍟2⊢𝕩}dayMatrix⋄
+	dayMatrix↩{Read○("8"⊸Snd) •args}⌾(⟨⌊numDaysSinceStart÷7, 7|numDaysSinceStart⟩⊸⊑) dayMatrix⋄
+	".HOURS" •file.Lines {(2⊸↓⌾⌽)2↓•Fmt}¨<˘dayMatrix⋄
+}⍟{"a"≡Fst} •args⋄
+•Out "DAYS: "⋄
+•Show dayMatrix⋄
+•Out "過ごし時間: "∾•Fmt sum←+´⥊dayMatrix⋄
+•Out "残り時間: "∾•Fmt 420-sum⋄
+•Out "残り日: "∾•Fmt 8÷˜420-sum⋄
